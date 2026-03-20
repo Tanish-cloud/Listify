@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: listifyy-backend
+    ports:
+      - "7860:7860"
+    environment:
+      - PORT=7860
+    volumes:
+      # Mount local directory to /app to enable hot-reloading (optional for dev)
+      - .:/app
+      # It's important to not overwrite the installed python packages inside the container if we mount .:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 7860 --reload

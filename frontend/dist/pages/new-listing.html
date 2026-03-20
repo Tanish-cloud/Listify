@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>New Listing — Listify</title>
+<style>
+.form-page { max-width:760px;margin:0 auto;padding:48px 0; }
+.form-section { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:20px; }
+.form-section-title { font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700;margin-bottom:6px; }
+.form-section-sub { color:var(--text3);font-size:0.87rem;margin-bottom:24px; }
+.form-grid { display:flex;flex-direction:column;gap:18px; }
+
+.upload-zone {
+  border:2px dashed var(--border2);border-radius:12px;padding:32px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  cursor:pointer;transition:var(--transition);text-align:center;
+}
+.upload-zone:hover, .upload-zone.drag { border-color:var(--accent);background:rgba(108,99,255,0.05); }
+.upload-zone p { color:var(--text3);font-size:0.87rem; }
+.upload-zone strong { color:var(--text2); }
+.upload-icon { font-size:2rem;opacity:0.5; }
+
+.preview-grid { display:flex;flex-wrap:wrap;gap:10px;margin-top:14px; }
+.preview-item { position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden; }
+.preview-item img { width:100%;height:100%;object-fit:cover; }
+.preview-remove {
+  position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.7);border:none;
+  color:#fff;width:20px;height:20px;border-radius:50%;cursor:pointer;font-size:10px;
+  display:grid;place-items:center;
+}
+
+.step-indicator { display:flex;align-items:center;gap:0;margin-bottom:36px; }
+.step { display:flex;align-items:center;gap:10px; }
+.step-dot { width:32px;height:32px;border-radius:50%;background:var(--surface);border:1px solid var(--border2);display:grid;place-items:center;font-size:0.8rem;font-weight:600;transition:var(--transition); }
+.step-dot.active { background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 0 12px var(--accent-glow); }
+.step-dot.done { background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.4);color:var(--green); }
+.step-label { font-size:0.82rem;color:var(--text3); }
+.step-line { flex:1;height:1px;background:var(--border);margin:0 12px; }
+
+.services-input-row { display:flex;gap:8px; }
+.services-tags { display:flex;flex-wrap:wrap;gap:8px;margin-top:10px; }
+.service-tag-item {
+  display:flex;align-items:center;gap:6px;padding:5px 12px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:8px;font-size:0.85rem;
+}
+.service-tag-item button { background:none;border:none;cursor:pointer;color:var(--text3);padding:0;font-size:12px;line-height:1; }
+.service-tag-item button:hover { color:var(--red); }
+</style>
+  <script type="module" crossorigin src="/assets/app-B5DUmXyZ.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/app-igT4_H2d.css">
+</head>
+<body>
+<nav class="navbar">
+  <a href="/" class="nav-logo"><div class="nav-logo-icon">L</div>Listi<span>fy</span></a>
+  <div class="nav-links"><a href="/pages/dashboard.html">Dashboard</a></div>
+  <div class="nav-actions" id="nav-actions"></div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="container">
+    <div class="form-page">
+      <a href="/pages/dashboard.html" style="display:inline-flex;align-items:center;gap:8px;color:var(--text3);font-size:0.9rem;margin-bottom:32px;">← Back to dashboard</a>
+      <h1 style="font-size:2rem;font-weight:800;margin-bottom:8px;">Create new listing</h1>
+      <p style="color:var(--text2);margin-bottom:36px;">Fill in the details below to list your business on Listify.</p>
+
+      <!-- BASIC INFO -->
+      <div class="form-section">
+        <div class="form-section-title">Basic information</div>
+        <div class="form-section-sub">Tell visitors about your business.</div>
+        <div class="form-grid">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Business name *</label>
+              <input class="form-input" type="text" id="name" required placeholder="e.g. Sunset Café">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select class="form-select" id="category" required>
+                <option value="">Select a category</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description *</label>
+            <textarea class="form-textarea" id="description" rows="4" placeholder="Describe your business, what makes it unique, who it serves..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Services offered</label>
+            <div class="services-input-row">
+              <input class="form-input" type="text" id="service-input" placeholder="e.g. Dine-in, Takeaway...">
+              <button type="button" class="btn btn-secondary" onclick="addService()">Add</button>
+            </div>
+            <div class="services-tags" id="services-tags"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOCATION -->
+      <div class="form-section">
+        <div class="form-section-title">Location</div>
+        <div class="form-section-sub">Where is your business located?</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label">Street address *</label>
+            <input class="form-input" type="text" id="address" required placeholder="12 Main Street">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">City *</label>
+              <input class="form-input" type="text" id="city" required placeholder="Chennai">
+            </div>
+            <div class="form-group">
+              <label class="form-label">State *</label>
+              <input class="form-input" type="text" id="state" required placeholder="Tamil Nadu">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Country *</label>
+              <input class="form-input" type="text" id="country" required placeholder="India">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Postal code *</label>
+              <input class="form-input" type="text" id="postal_code" required placeholder="600001">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTACT -->
+      <div class="form-section">
+        <div class="form-section-title">Contact information</div>
+        <div class="form-section-sub">How can customers reach you?</div>
+        <div class="form-grid">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone *</label>
+              <input class="form-input" type="tel" id="phone" required placeholder="+91 98765 43210">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Business email *</label>
+              <input class="form-input" type="email" id="email" required placeholder="hello@yourbusiness.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Website <span style="color:var(--text3);font-weight:400;">(optional)</span></label>
+            <input class="form-input" type="url" id="website" placeholder="https://yourbusiness.com">
+          </div>
+        </div>
+      </div>
+
+      <!-- HOURS -->
+      <div class="form-section">
+        <div class="form-section-title">Opening hours</div>
+        <div class="form-section-sub">Let customers know when you're open.</div>
+        <div class="form-grid" id="hours-grid"></div>
+      </div>
+
+      <!-- IMAGES -->
+      <div class="form-section">
+        <div class="form-section-title">Logo & Images</div>
+        <div class="form-section-sub">Upload after creating the listing from your dashboard.</div>
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:20px;color:var(--text3);font-size:0.87rem;">
+          💡 After submitting, go to your dashboard and click "Edit" on the listing to upload your logo and photos.
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:12px;">
+        <a href="/pages/dashboard.html" class="btn btn-ghost">Cancel</a>
+        <button class="btn btn-primary btn-lg" id="submit-btn" onclick="submitListing()">Create listing →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+if (!Auth.isLoggedIn()) window.location.href = '/pages/login.html';
+
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const services = [];
+
+// populate categories
+const catSel = document.getElementById('category');
+CATEGORIES.forEach(c => catSel.innerHTML += `<option value="${c}">${c}</option>`);
+
+// populate hours
+const hoursGrid = document.getElementById('hours-grid');
+DAYS.forEach(day => {
+  hoursGrid.innerHTML += `
+    <div class="form-row" style="align-items:center;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <input type="checkbox" id="chk-${day}" checked style="width:16px;height:16px;accent-color:var(--accent);">
+        <label for="chk-${day}" style="font-size:0.9rem;font-weight:500;min-width:90px;">${day}</label>
+      </div>
+      <input class="form-input" type="text" id="hrs-${day}" placeholder="9:00 AM – 6:00 PM">
+    </div>`;
+});
+
+function addService() {
+  const val = document.getElementById('service-input').value.trim();
+  if (!val || services.includes(val)) return;
+  services.push(val);
+  renderServices();
+  document.getElementById('service-input').value = '';
+}
+
+function removeService(s) {
+  const i = services.indexOf(s);
+  if (i > -1) services.splice(i, 1);
+  renderServices();
+}
+
+function renderServices() {
+  document.getElementById('services-tags').innerHTML = services.map(s =>
+    `<div class="service-tag-item">${s}<button onclick="removeService('${s}')">✕</button></div>`).join('');
+}
+
+document.getElementById('service-input').addEventListener('keydown', e => { if(e.key==='Enter'){e.preventDefault();addService();} });
+
+async function submitListing() {
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Creating…';
+
+  const opening_hours = {};
+  DAYS.forEach(day => {
+    if (document.getElementById(`chk-${day}`).checked) {
+      const val = document.getElementById(`hrs-${day}`).value.trim();
+      if (val) opening_hours[day] = val;
+    }
+  });
+
+  const payload = {
+    name: document.getElementById('name').value,
+    category: document.getElementById('category').value,
+    description: document.getElementById('description').value,
+    address: document.getElementById('address').value,
+    city: document.getElementById('city').value,
+    state: document.getElementById('state').value,
+    country: document.getElementById('country').value,
+    postal_code: document.getElementById('postal_code').value,
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+    website: document.getElementById('website').value || null,
+    opening_hours: Object.keys(opening_hours).length ? opening_hours : null,
+    services: services.length ? services : null,
+  };
+
+  try {
+    const result = await apiFetch('/listings', { method: 'POST', body: JSON.stringify(payload) });
+    toast('Listing created! 🎉', 'success');
+    setTimeout(() => window.location.href = `/pages/edit-listing.html?id=${result.id}`, 800);
+  } catch(e) {
+    toast(e.message, 'error');
+    btn.disabled = false;
+    btn.innerHTML = 'Create listing →';
+  }
+}
+</script>
+</body>
+</html>
