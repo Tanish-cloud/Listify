@@ -34,7 +34,8 @@
 
 .load-more { text-align:center; padding:32px 0; }
 </style>
-  <script type="module" crossorigin src="/assets/app-B5DUmXyZ.js"></script>
+  <script type="module" crossorigin src="/assets/listings-CaX629cE.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/app-DjkSlvHv.js">
   <link rel="stylesheet" crossorigin href="/assets/app-igT4_H2d.css">
 </head>
 <body>
@@ -92,98 +93,6 @@
     </div>
   </div>
 </div>
-
-<script>
-let allListings = [];
-let filtered = [];
-let activeCategory = '';
-let skip = 0;
-const LIMIT = 12;
-
-const params = new URLSearchParams(location.search);
-const initQ = params.get('q') || '';
-const initCat = params.get('category') || '';
-
-async function loadListings() {
-  try {
-    let data;
-    if (initQ) {
-      data = await apiFetch(`/search?q=${encodeURIComponent(initQ)}`);
-      document.getElementById('page-title').textContent = `Results for "${initQ}"`;
-    } else {
-      data = await apiFetch('/listings?limit=100');
-    }
-    allListings = data;
-    buildCategoryFilters();
-    if (initCat) setCategory(initCat);
-    else applyFilters();
-  } catch(e) {
-    document.getElementById('listings-grid').innerHTML = `<div style="grid-column:1/-1;color:var(--red);padding:40px;text-align:center;">${e.message}</div>`;
-  }
-}
-
-function buildCategoryFilters() {
-  const cats = [...new Set(allListings.map(b => b.category))].sort();
-  const el = document.getElementById('cat-filters');
-  el.innerHTML = `<div class="chip ${!activeCategory?'active':''}" onclick="setCategory('')">All</div>`;
-  cats.forEach(c => {
-    el.innerHTML += `<div class="chip ${activeCategory===c?'active':''}" onclick="setCategory('${c}')">${c}</div>`;
-  });
-}
-
-function setCategory(cat) {
-  activeCategory = cat;
-  document.querySelectorAll('#cat-filters .chip').forEach(el => {
-    el.classList.toggle('active', el.textContent === (cat || 'All'));
-  });
-  applyFilters();
-}
-
-function applyFilters() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const sort = document.getElementById('sort-select').value;
-  filtered = allListings.filter(b => {
-    const matchCat = !activeCategory || b.category === activeCategory;
-    const matchQ = !q || b.name.toLowerCase().includes(q);
-    return matchCat && matchQ;
-  });
-  if (sort === 'name') filtered.sort((a,b) => a.name.localeCompare(b.name));
-  renderListings();
-}
-
-function renderListings() {
-  const grid = document.getElementById('listings-grid');
-  document.getElementById('results-count').textContent = `${filtered.length} business${filtered.length!==1?'es':''} found`;
-  if (!filtered.length) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><h3>No results found</h3><p>Try a different search or category.</p></div>`;
-    document.getElementById('load-more').style.display = 'none';
-    return;
-  }
-  grid.innerHTML = filtered.slice(0, LIMIT).map(renderCard).join('');
-  document.getElementById('load-more').style.display = filtered.length > LIMIT ? 'block' : 'none';
-  skip = LIMIT;
-}
-
-function loadMore() {
-  const grid = document.getElementById('listings-grid');
-  grid.innerHTML += filtered.slice(skip, skip + LIMIT).map(renderCard).join('');
-  skip += LIMIT;
-  if (skip >= filtered.length) document.getElementById('load-more').style.display = 'none';
-}
-
-function clearFilters() {
-  activeCategory = '';
-  document.getElementById('search-input').value = '';
-  applyFilters();
-  buildCategoryFilters();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  if (initQ) document.getElementById('search-input').value = initQ;
-  loadListings();
-  document.getElementById('search-input').addEventListener('input', applyFilters);
-  document.getElementById('sort-select').addEventListener('change', applyFilters);
-});
-</script>
+
 </body>
 </html>

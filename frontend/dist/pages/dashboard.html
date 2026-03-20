@@ -39,7 +39,8 @@
 .new-listing-card .plus { font-size:2.5rem;opacity:0.4; }
 .new-listing-card p { color:var(--text3);font-size:0.9rem; }
 </style>
-  <script type="module" crossorigin src="/assets/app-B5DUmXyZ.js"></script>
+  <script type="module" crossorigin src="/assets/dashboard-C5OBmLmb.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/app-DjkSlvHv.js">
   <link rel="stylesheet" crossorigin href="/assets/app-igT4_H2d.css">
 </head>
 <body>
@@ -88,71 +89,6 @@
     </div>
   </div>
 </div>
-
-<script>
-if (!Auth.isLoggedIn()) window.location.href = '/pages/login.html';
-
-let deleteTargetId = null;
-
-async function load() {
-  try {
-    const listings = await apiFetch('/listings/me');
-    const user = Auth.user;
-    document.getElementById('user-name').textContent = user?.full_name || user?.email || 'Client';
-    document.getElementById('stat-total').textContent = listings.length;
-
-    const grid = document.getElementById('dash-grid');
-    let html = `<div class="new-listing-card" onclick="window.location.href='/pages/new-listing.html'">
-      <div class="plus">+</div>
-      <strong style="color:var(--text2);">Add new listing</strong>
-      <p>List a new business</p>
-    </div>`;
-
-    if (listings.length === 0) {
-      html += `<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;padding:40px;color:var(--text3);">
-        <div style="font-size:2rem;opacity:0.3;">🏪</div>
-        <p>No listings yet. Create your first one!</p>
-      </div>`;
-    } else {
-      html += listings.map(b => `
-        <div class="listing-manage-card">
-          <div class="lmc-cover">
-            ${b.images?.[0] ? `<img src="${API}${b.images[0].image_url}" alt="">` : b.name.charAt(0)}
-          </div>
-          <div class="lmc-body">
-            <div class="lmc-name">${b.name}</div>
-            <div class="lmc-meta">
-              <span class="badge badge-accent" style="margin-right:6px;">${b.category}</span>
-              ${b.city}, ${b.state}
-            </div>
-            <div class="lmc-actions">
-              <a href="/pages/business.html?id=${b.id}" class="btn btn-ghost btn-sm">View</a>
-              <a href="/pages/edit-listing.html?id=${b.id}" class="btn btn-secondary btn-sm">Edit</a>
-              <button class="btn btn-danger btn-sm" onclick="confirmDelete(${b.id})">Delete</button>
-            </div>
-          </div>
-        </div>`).join('');
-    }
-    grid.innerHTML = html;
-  } catch(e) {
-    toast(e.message, 'error');
-  }
-}
-
-function confirmDelete(id) {
-  deleteTargetId = id;
-  openModal('delete-modal');
-  document.getElementById('confirm-delete-btn').onclick = async () => {
-    try {
-      await apiFetch(`/listings/${deleteTargetId}`, { method: 'DELETE' });
-      closeModal('delete-modal');
-      toast('Listing deleted', 'success');
-      load();
-    } catch(e) { toast(e.message, 'error'); }
-  };
-}
-
-load();
-</script>
+
 </body>
 </html>

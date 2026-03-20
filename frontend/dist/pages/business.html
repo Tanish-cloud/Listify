@@ -57,7 +57,8 @@
 .lightbox img { max-width:90vw;max-height:90vh;border-radius:12px; }
 .lightbox-close { position:absolute;top:20px;right:24px;background:var(--surface);border:none;color:var(--text);width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:18px;display:grid;place-items:center; }
 </style>
-  <script type="module" crossorigin src="/assets/app-B5DUmXyZ.js"></script>
+  <script type="module" crossorigin src="/assets/business-ai9FjVSR.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/app-DjkSlvHv.js">
   <link rel="stylesheet" crossorigin href="/assets/app-igT4_H2d.css">
 </head>
 <body>
@@ -82,97 +83,6 @@
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
   <img id="lightbox-img" src="" alt="">
 </div>
-
-<script>
-const id = new URLSearchParams(location.search).get('id');
-
-function openLightbox(url) {
-  document.getElementById('lightbox-img').src = url;
-  document.getElementById('lightbox').classList.add('open');
-}
-function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
-
-async function load() {
-  if (!id) { window.location.href = '/pages/listings.html'; return; }
-  try {
-    const b = await apiFetch(`/listings/${id}`);
-    document.title = `${b.name} — Listify`;
-    renderBusiness(b);
-  } catch(e) {
-    document.getElementById('main-content').innerHTML = `<div class="empty-state"><div class="empty-icon">😕</div><h3>Business not found</h3><p>${e.message}</p></div>`;
-  }
-}
-
-function renderBusiness(b) {
-  const logoHtml = b.logo_url
-    ? `<img src="${API}${b.logo_url}" alt="${b.name}">`
-    : `<span>${b.name.charAt(0)}</span>`;
-
-  const imagesHtml = b.images?.length
-    ? `<div class="images-grid">${b.images.map(img => `<div class="img-thumb" onclick="openLightbox('${API}${img.image_url}')"><img src="${API}${img.image_url}" alt=""></div>`).join('')}</div>`
-    : `<p style="color:var(--text3);font-size:0.9rem;">No images uploaded yet.</p>`;
-
-  const servicesHtml = b.services?.length
-    ? b.services.map(s => `<span class="service-tag">${s}</span>`).join('')
-    : `<span style="color:var(--text3);font-size:0.9rem;">No services listed.</span>`;
-
-  const hoursHtml = b.opening_hours
-    ? Object.entries(b.opening_hours).map(([day,time]) => `<div class="hour-item"><div class="hour-day">${day}</div><div class="hour-time">${time}</div></div>`).join('')
-    : `<p style="color:var(--text3);font-size:0.9rem;">Hours not provided.</p>`;
-
-  document.getElementById('main-content').innerHTML = `
-    <div class="business-hero">
-      <div class="biz-cover" style="${!b.logo_url?'background:var(--surface2);':''}">
-        ${b.images?.[0] ? `<img src="${API}${b.images[0].image_url}" alt="${b.name}">` : `<span style="opacity:.2;">${b.name.charAt(0)}</span>`}
-        <div class="biz-logo">${logoHtml}</div>
-      </div>
-      <div class="biz-header">
-        <div class="biz-meta">
-          <span class="badge badge-accent">${b.category}</span>
-          ${b.city ? `<span style="color:var(--text3);font-size:0.85rem;">📍 ${b.city}, ${b.state}</span>` : ''}
-        </div>
-        <h1 class="biz-name">${b.name}</h1>
-        <p class="biz-desc">${b.description}</p>
-      </div>
-    </div>
-
-    <div class="biz-layout">
-      <div>
-        <div class="info-card">
-          <h3>Services</h3>
-          <div>${servicesHtml}</div>
-        </div>
-        <div class="info-card">
-          <h3>Photos</h3>
-          ${imagesHtml}
-        </div>
-        <div class="info-card">
-          <h3>Opening Hours</h3>
-          <div class="hours-grid">${hoursHtml}</div>
-        </div>
-      </div>
-
-      <div>
-        <div class="info-card">
-          <h3>Contact & Location</h3>
-          <div class="info-row"><span class="info-icon">📍</span><div><div class="info-label">Address</div><div class="info-value">${b.address}, ${b.city}, ${b.state} ${b.postal_code}, ${b.country}</div></div></div>
-          <div class="info-row"><span class="info-icon">📞</span><div><div class="info-label">Phone</div><div class="info-value"><a href="tel:${b.phone}" style="color:var(--accent2);">${b.phone}</a></div></div></div>
-          <div class="info-row"><span class="info-icon">✉️</span><div><div class="info-label">Email</div><div class="info-value"><a href="mailto:${b.email}" style="color:var(--accent2);">${b.email}</a></div></div></div>
-          ${b.website ? `<div class="info-row"><span class="info-icon">🌐</span><div><div class="info-label">Website</div><div class="info-value"><a href="${b.website}" target="_blank" style="color:var(--accent2);">${b.website.replace(/^https?:\/\//,'')}</a></div></div></div>` : ''}
-        </div>
-
-        ${Auth.isLoggedIn() && Auth.user?.id === b.owner_id ? `
-        <div class="info-card" style="border-color:rgba(108,99,255,0.3);">
-          <h3>Owner actions</h3>
-          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
-            <a href="/pages/edit-listing.html?id=${b.id}" class="btn btn-secondary btn-sm">✏️ Edit listing</a>
-          </div>
-        </div>` : ''}
-      </div>
-    </div>`;
-}
-
-load();
-</script>
+
 </body>
 </html>

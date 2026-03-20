@@ -106,4 +106,15 @@ function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 /* ─── INIT ─── */
+window.API = API;
+window.Auth = Auth;
+window.apiFetch = apiFetch;
+window.toast = toast;
+window.initNavbar = initNavbar;
+window.logout = logout;
+window.CATEGORIES = CATEGORIES;
+window.renderCard = renderCard;
+window.openModal = openModal;
+window.closeModal = closeModal;
+
 document.addEventListener('DOMContentLoaded', initNavbar);

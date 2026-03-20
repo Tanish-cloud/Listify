@@ -1,7 +1,0 @@
-(function(){const o=document.createElement("link").relList;if(o&&o.supports&&o.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const n of t.addedNodes)n.tagName==="LINK"&&n.rel==="modulepreload"&&s(n)}).observe(document,{childList:!0,subtree:!0});function a(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=a(e);fetch(e.href,t)}})();const i={get token(){return localStorage.getItem("token")},get user(){try{return JSON.parse(localStorage.getItem("user"))}catch{return null}},set(r,o){localStorage.setItem("token",r),localStorage.setItem("user",JSON.stringify(o))},clear(){localStorage.removeItem("token"),localStorage.removeItem("user")},isLoggedIn(){return!!this.token}};function c(){const r=document.getElementById("nav-actions");r&&(i.isLoggedIn()?(i.user,r.innerHTML=`
-      <a href="/pages/dashboard.html" class="btn btn-ghost btn-sm">Dashboard</a>
-      <button onclick="logout()" class="btn btn-secondary btn-sm">Sign out</button>
-    `):r.innerHTML=`
-      <a href="/pages/login.html" class="btn btn-ghost btn-sm">Sign in</a>
-      <a href="/pages/register.html" class="btn btn-primary btn-sm">List your business</a>
-    `)}document.addEventListener("DOMContentLoaded",c);

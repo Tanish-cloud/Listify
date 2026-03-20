@@ -106,7 +106,8 @@
 .cta-banner h2 { font-size:2rem; font-weight:800; max-width:440px; }
 .cta-banner p { color:var(--text2); margin-top:10px; }
 </style>
-  <script type="module" crossorigin src="/assets/app-B5DUmXyZ.js"></script>
+  <script type="module" crossorigin src="/assets/main-Czihvuq3.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/app-DjkSlvHv.js">
   <link rel="stylesheet" crossorigin href="/assets/app-igT4_H2d.css">
 </head>
 <body>
@@ -221,58 +222,6 @@
     <div style="color:var(--text3);font-size:0.85rem;">© 2025 Listify. Built with FastAPI & ❤️</div>
   </div>
 </footer>
-
-<script>
-const CAT_ICONS = {
-  'Food & Beverage':'🍽️','Retail':'🛍️','Health & Wellness':'💊','Technology':'💻',
-  'Education':'📚','Finance':'💰','Real Estate':'🏠','Beauty & Salon':'💇',
-  'Automotive':'🚗','Entertainment':'🎭','Travel & Tourism':'✈️','Home Services':'🔧',
-  'Legal':'⚖️','Sports & Fitness':'🏋️','Fashion':'👗','Other':'📦'
-};
-
-async function init() {
-  // fill category dropdowns
-  const catSelect = document.getElementById('search-cat');
-  const catGrid = document.getElementById('categories-grid');
-  CATEGORIES.forEach(c => {
-    catSelect.innerHTML += `<option value="${c}">${c}</option>`;
-    catGrid.innerHTML += `<div class="cat-card" onclick="browseCategory('${c}')">
-      <div class="cat-icon">${CAT_ICONS[c]||'📦'}</div>
-      <div class="cat-name">${c}</div>
-    </div>`;
-  });
-
-  // load listings
-  try {
-    const data = await apiFetch('/listings?limit=6');
-    document.getElementById('stat-count').textContent = data.length >= 6 ? '100+' : data.length;
-    const grid = document.getElementById('listings-grid');
-    if (!data.length) {
-      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🏪</div><h3>No listings yet</h3><p>Be the first to list your business!</p></div>`;
-    } else {
-      grid.innerHTML = data.map(renderCard).join('');
-    }
-  } catch(e) {
-    document.getElementById('listings-grid').innerHTML = `<div style="grid-column:1/-1;color:var(--text3);text-align:center;padding:40px;">Could not connect to API. Make sure the backend is running.</div>`;
-  }
-}
-
-function doSearch() {
-  const q = document.getElementById('search-input').value.trim();
-  const cat = document.getElementById('search-cat').value;
-  const params = new URLSearchParams();
-  if (q) params.set('q', q);
-  if (cat) params.set('category', cat);
-  window.location.href = `/pages/listings.html?${params}`;
-}
-
-document.getElementById('search-input').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
-
-function browseCategory(cat) {
-  window.location.href = `/pages/listings.html?category=${encodeURIComponent(cat)}`;
-}
-
-init();
-</script>
+
 </body>
 </html>

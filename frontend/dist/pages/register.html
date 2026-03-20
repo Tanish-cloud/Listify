@@ -29,7 +29,8 @@ body::before {
 .perk { display:flex;align-items:center;gap:10px;font-size:0.88rem;color:var(--text2); }
 .perk-icon { width:28px;height:28px;border-radius:8px;background:rgba(108,99,255,0.12);display:grid;place-items:center;flex-shrink:0;font-size:0.85rem; }
 </style>
-  <script type="module" crossorigin src="/assets/app-B5DUmXyZ.js"></script>
+  <script type="module" crossorigin src="/assets/register-CNJPSKuh.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/app-DjkSlvHv.js">
   <link rel="stylesheet" crossorigin href="/assets/app-igT4_H2d.css">
 </head>
 <body>
@@ -65,46 +66,6 @@ body::before {
 
   <div class="auth-footer">Already have an account? <a href="/pages/login.html">Sign in</a></div>
 </div>
-
-<script>
-if (Auth.isLoggedIn()) window.location.href = '/pages/dashboard.html';
-
-async function handleRegister(e) {
-  e.preventDefault();
-  const btn = document.getElementById('submit-btn');
-  const errEl = document.getElementById('reg-error');
-  errEl.classList.remove('visible');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Creating account…';
-
-  try {
-    await apiFetch('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify({
-        full_name: document.getElementById('full_name').value,
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
-      })
-    });
-    // auto-login
-    const data = await apiFetch('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        full_name: '',
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
-      })
-    });
-    Auth.set(data.access_token, { email: document.getElementById('email').value });
-    toast('Account created! Welcome to Listify 🎉', 'success');
-    setTimeout(() => window.location.href = '/pages/dashboard.html', 800);
-  } catch(err) {
-    errEl.textContent = err.message;
-    errEl.classList.add('visible');
-    btn.disabled = false;
-    btn.innerHTML = 'Create free account';
-  }
-}
-</script>
+
 </body>
 </html>

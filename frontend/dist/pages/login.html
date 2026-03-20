@@ -35,7 +35,8 @@ body::before {
 .or-divider { display:flex;align-items:center;gap:12px;color:var(--text3);font-size:0.82rem; }
 .or-divider::before,.or-divider::after { content:'';flex:1;height:1px;background:var(--border); }
 </style>
-  <script type="module" crossorigin src="/assets/app-B5DUmXyZ.js"></script>
+  <script type="module" crossorigin src="/assets/login-CNJPSKuh.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/app-DjkSlvHv.js">
   <link rel="stylesheet" crossorigin href="/assets/app-igT4_H2d.css">
 </head>
 <body>
@@ -65,40 +66,6 @@ body::before {
     Don't have an account? <a href="/pages/register.html">Create one free</a>
   </div>
 </div>
-
-<script>
-if (Auth.isLoggedIn()) window.location.href = '/pages/dashboard.html';
-
-async function handleLogin(e) {
-  e.preventDefault();
-  const btn = document.getElementById('submit-btn');
-  const errEl = document.getElementById('login-error');
-  errEl.classList.remove('visible');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Signing in…';
-
-  try {
-    const data = await apiFetch('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({
-        full_name: '',
-        email: document.getElementById('email').value,
-        password: document.getElementById('password').value,
-      })
-    });
-    // fetch user info
-    const meRes = await fetch(API + '/listings/me', { headers: { Authorization: `Bearer ${data.access_token}` } });
-    // store minimal user (we'll get owner_id from token sub via dashboard)
-    Auth.set(data.access_token, { email: document.getElementById('email').value });
-    toast('Signed in successfully!', 'success');
-    setTimeout(() => window.location.href = '/pages/dashboard.html', 700);
-  } catch(err) {
-    errEl.textContent = err.message;
-    errEl.classList.add('visible');
-    btn.disabled = false;
-    btn.innerHTML = 'Sign in';
-  }
-}
-</script>
+
 </body>
 </html>
