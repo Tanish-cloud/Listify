@@ -282,6 +282,15 @@ async function saveChanges() {
 }
 
 load();
+
+window.saveChanges = saveChanges;
+window.renderServices = renderServices;
+window.load = load;
+window.addService = addService;
+window.uploadImages = uploadImages;
+window.renderForm = renderForm;
+window.removeService = removeService;
+window.uploadLogo = uploadLogo;
 </script>
 </body>
 </html>

@@ -1,8 +1,8 @@
-import"./app-DjkSlvHv.js";const t=new URLSearchParams(location.search).get("id");async function m(){if(!t){window.location.href="/pages/listings.html";return}try{const i=await apiFetch(`/listings/${t}`);document.title=`${i.name} — Listify`,p(i)}catch(i){document.getElementById("main-content").innerHTML=`<div class="empty-state"><div class="empty-icon">😕</div><h3>Business not found</h3><p>${i.message}</p></div>`}}function p(i){var a,e,n,o;const d=i.logo_url?`<img src="${API}${i.logo_url}" alt="${i.name}">`:`<span>${i.name.charAt(0)}</span>`,c=(a=i.images)!=null&&a.length?`<div class="images-grid">${i.images.map(s=>`<div class="img-thumb" onclick="openLightbox('${API}${s.image_url}')"><img src="${API}${s.image_url}" alt=""></div>`).join("")}</div>`:'<p style="color:var(--text3);font-size:0.9rem;">No images uploaded yet.</p>',l=(e=i.services)!=null&&e.length?i.services.map(s=>`<span class="service-tag">${s}</span>`).join(""):'<span style="color:var(--text3);font-size:0.9rem;">No services listed.</span>',v=i.opening_hours?Object.entries(i.opening_hours).map(([s,r])=>`<div class="hour-item"><div class="hour-day">${s}</div><div class="hour-time">${r}</div></div>`).join(""):'<p style="color:var(--text3);font-size:0.9rem;">Hours not provided.</p>';document.getElementById("main-content").innerHTML=`
+import"./app-yIULqX0W.js";const t=new URLSearchParams(location.search).get("id");function g(i){document.getElementById("lightbox-img").src=i,document.getElementById("lightbox").classList.add("open")}function h(){document.getElementById("lightbox").classList.remove("open")}async function d(){if(!t){window.location.href="/pages/listings.html";return}try{const i=await apiFetch(`/listings/${t}`);document.title=`${i.name} — Listify`,c(i)}catch(i){document.getElementById("main-content").innerHTML=`<div class="empty-state"><div class="empty-icon">😕</div><h3>Business not found</h3><p>${i.message}</p></div>`}}function c(i){var e,a,n,o;const l=i.logo_url?`<img src="${API}${i.logo_url}" alt="${i.name}">`:`<span>${i.name.charAt(0)}</span>`,r=(e=i.images)!=null&&e.length?`<div class="images-grid">${i.images.map(s=>`<div class="img-thumb" onclick="openLightbox('${API}${s.image_url}')"><img src="${API}${s.image_url}" alt=""></div>`).join("")}</div>`:'<p style="color:var(--text3);font-size:0.9rem;">No images uploaded yet.</p>',v=(a=i.services)!=null&&a.length?i.services.map(s=>`<span class="service-tag">${s}</span>`).join(""):'<span style="color:var(--text3);font-size:0.9rem;">No services listed.</span>',m=i.opening_hours?Object.entries(i.opening_hours).map(([s,p])=>`<div class="hour-item"><div class="hour-day">${s}</div><div class="hour-time">${p}</div></div>`).join(""):'<p style="color:var(--text3);font-size:0.9rem;">Hours not provided.</p>';document.getElementById("main-content").innerHTML=`
     <div class="business-hero">
       <div class="biz-cover" style="${i.logo_url?"":"background:var(--surface2);"}">
         ${(n=i.images)!=null&&n[0]?`<img src="${API}${i.images[0].image_url}" alt="${i.name}">`:`<span style="opacity:.2;">${i.name.charAt(0)}</span>`}
-        <div class="biz-logo">${d}</div>
+        <div class="biz-logo">${l}</div>
       </div>
       <div class="biz-header">
         <div class="biz-meta">
@@ -18,15 +18,15 @@ import"./app-DjkSlvHv.js";const t=new URLSearchParams(location.search).get("id")
       <div>
         <div class="info-card">
           <h3>Services</h3>
-          <div>${l}</div>
+          <div>${v}</div>
         </div>
         <div class="info-card">
           <h3>Photos</h3>
-          ${c}
+          ${r}
         </div>
         <div class="info-card">
           <h3>Opening Hours</h3>
-          <div class="hours-grid">${v}</div>
+          <div class="hours-grid">${m}</div>
         </div>
       </div>
 
@@ -47,4 +47,4 @@ import"./app-DjkSlvHv.js";const t=new URLSearchParams(location.search).get("id")
           </div>
         </div>`:""}
       </div>
-    </div>`}m();
+    </div>`}d();window.openLightbox=g;window.load=d;window.closeLightbox=h;window.renderBusiness=c;

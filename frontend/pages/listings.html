@@ -184,6 +184,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('search-input').addEventListener('input', applyFilters);
   document.getElementById('sort-select').addEventListener('change', applyFilters);
 });
+
+window.setCategory = setCategory;
+window.applyFilters = applyFilters;
+window.loadMore = loadMore;
+window.loadListings = loadListings;
+window.clearFilters = clearFilters;
+window.buildCategoryFilters = buildCategoryFilters;
+window.renderListings = renderListings;
 </script>
 </body>
 </html>
