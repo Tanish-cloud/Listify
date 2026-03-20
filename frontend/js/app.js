@@ -19,7 +19,8 @@ async function apiFetch(path, options = {}) {
   if (res.status === 401) { Auth.clear(); window.location.href = '/pages/login.html'; return; }
   if (!res.ok) {
     const err = await res.json().catch(() => ({ detail: 'Something went wrong' }));
-    throw new Error(err.detail || JSON.stringify(err));
+    const errorMsg = Array.isArray(err.detail) ? err.detail.map(e => e.msg).join(', ') : (err.detail || JSON.stringify(err));
+    throw new Error(errorMsg);
   }
   if (res.status === 204) return null;
   return res.json();

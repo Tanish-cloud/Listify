@@ -67,47 +67,45 @@ body::before {
 
 <script type="module" src="/js/app.js"></script>
 <script type="module">
-document.addEventListener('DOMContentLoaded', () => {
-  if (window.Auth && window.Auth.isLoggedIn()) {
-    window.location.href = '/pages/dashboard.html';
-  }
+if (window.Auth && window.Auth.isLoggedIn()) {
+  window.location.href = '/pages/dashboard.html';
+}
 
-  const form = document.getElementById('register-form');
-  if (form) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
+const form = document.getElementById('register-form');
+if (form) {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const btn = document.getElementById('submit-btn');
+    const errEl = document.getElementById('reg-error');
+    errEl.classList.remove('visible');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Creating account…';
+
+    try {
+      await window.apiFetch('/auth/register', {
+        method: 'POST',
+        body: JSON.stringify({
+          full_name: document.getElementById('full_name').value,
+          email: document.getElementById('email').value,
+          password: document.getElementById('password').value,
+        })
+      });
       
-      const btn = document.getElementById('submit-btn');
-      const errEl = document.getElementById('reg-error');
-      errEl.classList.remove('visible');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Creating account…';
-
-      try {
-        await window.apiFetch('/auth/register', {
-          method: 'POST',
-          body: JSON.stringify({
-            full_name: document.getElementById('full_name').value,
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value,
-          })
-        });
-        
-        window.toast('Account created', 'success');
-        setTimeout(() => window.location.href = '/pages/login.html', 800);
-      } catch(err) {
-        window.toast(err.message, 'error');
-        errEl.textContent = err.message;
-        errEl.classList.add('visible');
-      } finally {
-        if (btn) {
-          btn.disabled = false;
-          btn.innerHTML = 'Create free account';
-        }
+      window.toast('Account created', 'success');
+      setTimeout(() => window.location.href = '/pages/login.html', 800);
+    } catch(err) {
+      window.toast(err.message, 'error');
+      errEl.textContent = err.message;
+      errEl.classList.add('visible');
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = 'Create free account';
       }
-    });
-  }
-});
+    }
+  });
+}
 </script>
 </body>
 </html>
