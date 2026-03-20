@@ -1,0 +1,19 @@
+# Virtual environments
+venv/
+env/
+.venv/
+.env
+
+# Python caching
+__pycache__/
+*.pyc
+*.pyo
+
+# IDEs
+.idea/
+.vscode/
+
+# Project specifics
+business_listing/business_listing.db
+business_listing/uploads/
+business_listing/pip_install.log

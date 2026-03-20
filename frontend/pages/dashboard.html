@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dashboard — Listify</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+.dash-header {
+  background:var(--bg2); border-bottom:1px solid var(--border);
+  padding:40px 0 32px;
+}
+.dash-header h1 { font-size:1.8rem;font-weight:800; }
+.dash-header p { color:var(--text2);margin-top:4px; }
+
+.stats-row { display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:28px; }
+.stat-card { background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px; }
+.stat-card .num { font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;margin-bottom:4px; }
+.stat-card .label { color:var(--text3);font-size:0.82rem; }
+
+.dash-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px;padding:40px 0; }
+
+.listing-manage-card {
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;
+  transition:var(--transition);
+}
+.listing-manage-card:hover { border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow); }
+.lmc-cover { height:140px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden; }
+.lmc-cover img { width:100%;height:100%;object-fit:cover; }
+.lmc-body { padding:20px; }
+.lmc-name { font-weight:700;font-size:1.05rem;margin-bottom:6px; }
+.lmc-meta { color:var(--text3);font-size:0.83rem;margin-bottom:14px; }
+.lmc-actions { display:flex;gap:8px; }
+
+.new-listing-card {
+  background:transparent;border:2px dashed var(--border2);border-radius:var(--radius);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;padding:40px;cursor:pointer;transition:var(--transition);min-height:280px;
+}
+.new-listing-card:hover { border-color:var(--accent);background:rgba(108,99,255,0.04); }
+.new-listing-card .plus { font-size:2.5rem;opacity:0.4; }
+.new-listing-card p { color:var(--text3);font-size:0.9rem; }
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="/" class="nav-logo"><div class="nav-logo-icon">L</div>Listi<span>fy</span></a>
+  <div class="nav-links"><a href="/">Home</a><a href="/pages/listings.html">Listings</a><a href="/pages/dashboard.html" class="active">Dashboard</a></div>
+  <div class="nav-actions" id="nav-actions"></div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="dash-header">
+    <div class="container">
+      <p style="font-size:0.85rem;color:var(--text3);margin-bottom:6px;">Welcome back,</p>
+      <h1 id="user-name">—</h1>
+      <p>Manage your business listings from here.</p>
+      <div class="stats-row">
+        <div class="stat-card"><div class="num" id="stat-total">—</div><div class="label">Total listings</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--green);">✓</div><div class="label">Active</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--accent2);">∞</div><div class="label">Free forever</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:36px 0 0;">
+      <h2 style="font-size:1.3rem;font-weight:700;">Your listings</h2>
+      <a href="/pages/new-listing.html" class="btn btn-primary btn-sm">+ New listing</a>
+    </div>
+    <div class="dash-grid" id="dash-grid">
+      <div style="grid-column:1/-1;display:flex;justify-content:center;padding:60px;"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirm modal -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <span class="modal-title">Delete listing?</span>
+      <button class="modal-close" onclick="closeModal('delete-modal')">✕</button>
+    </div>
+    <p style="color:var(--text2);margin-bottom:28px;">This action cannot be undone. The listing and all its images will be permanently removed.</p>
+    <div style="display:flex;gap:10px;justify-content:flex-end;">
+      <button class="btn btn-ghost" onclick="closeModal('delete-modal')">Cancel</button>
+      <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+if (!Auth.isLoggedIn()) window.location.href = '/pages/login.html';
+
+let deleteTargetId = null;
+
+async function load() {
+  try {
+    const listings = await apiFetch('/listings/me');
+    const user = Auth.user;
+    document.getElementById('user-name').textContent = user?.full_name || user?.email || 'Client';
+    document.getElementById('stat-total').textContent = listings.length;
+
+    const grid = document.getElementById('dash-grid');
+    let html = `<div class="new-listing-card" onclick="window.location.href='/pages/new-listing.html'">
+      <div class="plus">+</div>
+      <strong style="color:var(--text2);">Add new listing</strong>
+      <p>List a new business</p>
+    </div>`;
+
+    if (listings.length === 0) {
+      html += `<div style="display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;padding:40px;color:var(--text3);">
+        <div style="font-size:2rem;opacity:0.3;">🏪</div>
+        <p>No listings yet. Create your first one!</p>
+      </div>`;
+    } else {
+      html += listings.map(b => `
+        <div class="listing-manage-card">
+          <div class="lmc-cover">
+            ${b.images?.[0] ? `<img src="${API}${b.images[0].image_url}" alt="">` : b.name.charAt(0)}
+          </div>
+          <div class="lmc-body">
+            <div class="lmc-name">${b.name}</div>
+            <div class="lmc-meta">
+              <span class="badge badge-accent" style="margin-right:6px;">${b.category}</span>
+              ${b.city}, ${b.state}
+            </div>
+            <div class="lmc-actions">
+              <a href="/pages/business.html?id=${b.id}" class="btn btn-ghost btn-sm">View</a>
+              <a href="/pages/edit-listing.html?id=${b.id}" class="btn btn-secondary btn-sm">Edit</a>
+              <button class="btn btn-danger btn-sm" onclick="confirmDelete(${b.id})">Delete</button>
+            </div>
+          </div>
+        </div>`).join('');
+    }
+    grid.innerHTML = html;
+  } catch(e) {
+    toast(e.message, 'error');
+  }
+}
+
+function confirmDelete(id) {
+  deleteTargetId = id;
+  openModal('delete-modal');
+  document.getElementById('confirm-delete-btn').onclick = async () => {
+    try {
+      await apiFetch(`/listings/${deleteTargetId}`, { method: 'DELETE' });
+      closeModal('delete-modal');
+      toast('Listing deleted', 'success');
+      load();
+    } catch(e) { toast(e.message, 'error'); }
+  };
+}
+
+load();
+</script>
+</body>
+</html>

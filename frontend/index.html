@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Listify — Discover Local Businesses</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; display: flex; align-items: center;
+  position: relative; overflow: hidden;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(108,99,255,0.18) 0%, transparent 70%);
+}
+.hero::before {
+  content:''; position:absolute; inset:0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E") repeat;
+}
+.hero-content { position:relative; z-index:1; max-width:760px; }
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:7px 16px; border-radius:99px;
+  background:rgba(108,99,255,0.12); border:1px solid rgba(108,99,255,0.3);
+  color:var(--accent2); font-size:0.82rem; font-weight:600;
+  letter-spacing:0.06em; text-transform:uppercase; margin-bottom:28px;
+}
+.hero h1 {
+  font-size: clamp(2.8rem, 6vw, 5rem); font-weight:800;
+  line-height:1.05; margin-bottom:24px; letter-spacing:-0.02em;
+}
+.hero h1 em { font-style:normal; color:var(--accent); }
+.hero-sub { font-size:1.15rem; color:var(--text2); max-width:520px; margin-bottom:44px; line-height:1.7; }
+
+/* ── SEARCH BAR ── */
+.search-bar {
+  display:flex; align-items:stretch; gap:0;
+  background:var(--surface); border:1px solid var(--border2);
+  border-radius: 14px; overflow:hidden; max-width:640px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  transition:var(--transition);
+}
+.search-bar:focus-within { border-color:var(--accent); box-shadow:0 8px 40px rgba(0,0,0,0.4), 0 0 0 3px var(--accent-glow); }
+.search-bar input {
+  flex:1; background:transparent; border:none; outline:none;
+  padding:16px 20px; color:var(--text); font-size:1rem; font-family:'Outfit',sans-serif;
+}
+.search-bar input::placeholder { color:var(--text3); }
+.search-divider { width:1px; background:var(--border); margin:12px 0; }
+.search-category {
+  background:transparent; border:none; outline:none;
+  appearance:none; -webkit-appearance:none; -moz-appearance:none;
+  padding:0 20px; color:var(--text2); font-family:'Outfit',sans-serif; font-size:0.9rem;
+  cursor:pointer; min-width:160px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239898b0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 14px center;
+  padding-right:36px;
+}
+.search-btn { padding:14px 28px; background:var(--accent); color:#fff; border:none; cursor:pointer; font-family:'Outfit',sans-serif; font-weight:600; font-size:0.95rem; transition:var(--transition); }
+.search-btn:hover { background:#7b73ff; }
+
+.hero-stats { display:flex; gap:40px; margin-top:44px; }
+.stat-item { display:flex; flex-direction:column; gap:2px; }
+.stat-num { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; }
+.stat-label { font-size:0.83rem; color:var(--text3); }
+
+/* ── FLOATING CARDS ── */
+.hero-visual {
+  position:absolute; right:-20px; top:50%; transform:translateY(-50%);
+  width:420px; height:480px;
+  display:none;
+}
+@media(min-width:1100px){ .hero-visual { display:block; } }
+
+.float-card {
+  position:absolute; background:var(--surface); border:1px solid var(--border2);
+  border-radius:16px; padding:16px 20px;
+  box-shadow:var(--shadow-lg); animation:float 6s ease-in-out infinite;
+}
+.float-card:nth-child(1) { top:0; left:40px; animation-delay:0s; }
+.float-card:nth-child(2) { top:160px; right:0; animation-delay:-2s; }
+.float-card:nth-child(3) { bottom:60px; left:10px; animation-delay:-4s; }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+/* ── SECTIONS ── */
+.section-header { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:32px; }
+.section-title { font-size:1.8rem; font-weight:800; }
+.section-sub { color:var(--text2); margin-top:6px; font-size:0.95rem; }
+
+.listings-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
+
+/* ── CATEGORIES STRIP ── */
+.categories-section { padding:40px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--bg2); }
+.categories-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:12px; }
+.cat-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:20px 16px; text-align:center; cursor:pointer; transition:var(--transition);
+}
+.cat-card:hover { border-color:var(--accent); background:rgba(108,99,255,0.08); transform:translateY(-2px); }
+.cat-icon { font-size:1.8rem; margin-bottom:8px; }
+.cat-name { font-size:0.85rem; font-weight:600; color:var(--text2); }
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: linear-gradient(135deg, rgba(108,99,255,0.2) 0%, rgba(167,139,250,0.1) 100%);
+  border:1px solid rgba(108,99,255,0.3); border-radius:24px;
+  padding:60px; display:flex; justify-content:space-between; align-items:center; gap:40px;
+}
+.cta-banner h2 { font-size:2rem; font-weight:800; max-width:440px; }
+.cta-banner p { color:var(--text2); margin-top:10px; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">L</div>
+    Listi<span>fy</span>
+  </a>
+  <div class="nav-links">
+    <a href="/" class="active">Home</a>
+    <a href="/pages/listings.html">Listings</a>
+  </div>
+  <div class="nav-actions" id="nav-actions"></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow">✦ Discover local businesses</div>
+      <h1>Find the <em>perfect</em> business for your needs</h1>
+      <p class="hero-sub">Browse thousands of verified local businesses. From restaurants to services — everything you need, in one place.</p>
+
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search businesses, services..." />
+        <div class="search-divider"></div>
+        <select class="search-category" id="search-cat">
+          <option value="">All Categories</option>
+        </select>
+        <button class="search-btn" onclick="doSearch()">Search</button>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item"><span class="stat-num" id="stat-count">—</span><span class="stat-label">Businesses listed</span></div>
+        <div class="stat-item"><span class="stat-num">16</span><span class="stat-label">Categories</span></div>
+        <div class="stat-item"><span class="stat-num">Free</span><span class="stat-label">To list & browse</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- decorative floating cards -->
+  <div class="hero-visual">
+    <div class="float-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="width:36px;height:36px;border-radius:10px;background:var(--accent);display:grid;place-items:center;font-size:1.1rem;">☕</div>
+        <div><div style="font-weight:600;font-size:0.9rem;">Sunrise Café</div><div style="font-size:0.75rem;color:var(--text3);">Food & Beverage</div></div>
+      </div>
+      <div style="font-size:0.8rem;color:var(--text2);">📍 Chennai, Tamil Nadu</div>
+      <div class="stars" style="margin-top:6px;font-size:0.8rem;">★★★★★</div>
+    </div>
+    <div class="float-card">
+      <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">New listing</div>
+      <div style="font-weight:700;font-size:1rem;margin-bottom:4px;">TechFix Solutions</div>
+      <span class="badge badge-accent">Technology</span>
+    </div>
+    <div class="float-card">
+      <div style="font-size:0.75rem;color:var(--green);font-weight:600;margin-bottom:6px;">✓ Verified Business</div>
+      <div style="font-weight:600;font-size:0.9rem;">Elite Fitness Studio</div>
+      <div style="font-size:0.8rem;color:var(--text3);margin-top:4px;">Sports & Fitness</div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories-section">
+  <div class="container">
+    <h2 style="font-size:1.3rem;margin-bottom:20px;color:var(--text2);">Browse by category</h2>
+    <div class="categories-grid" id="categories-grid"></div>
+  </div>
+</section>
+
+<!-- RECENT LISTINGS -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Recent listings</h2>
+        <p class="section-sub">Freshly added businesses from your area</p>
+      </div>
+      <a href="/pages/listings.html" class="btn btn-secondary btn-sm">View all →</a>
+    </div>
+    <div class="listings-grid" id="listings-grid">
+      <div style="grid-column:1/-1;" class="empty-state">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="cta-banner">
+      <div>
+        <h2>Own a business? <br/>Get listed today.</h2>
+        <p>Reach thousands of potential customers. It's completely free.</p>
+      </div>
+      <div style="display:flex;gap:12px;flex-shrink:0;flex-wrap:wrap;">
+        <a href="/pages/register.html" class="btn btn-primary btn-lg">Create free listing</a>
+        <a href="/pages/listings.html" class="btn btn-ghost btn-lg">Browse first</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="border-top:1px solid var(--border);padding:40px 0;background:var(--bg2);">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+    <div class="nav-logo"><div class="nav-logo-icon">L</div>Listi<span>fy</span></div>
+    <div style="color:var(--text3);font-size:0.85rem;">© 2025 Listify. Built with FastAPI & ❤️</div>
+  </div>
+</footer>
+
+<script src="js/app.js"></script>
+<script>
+const CAT_ICONS = {
+  'Food & Beverage':'🍽️','Retail':'🛍️','Health & Wellness':'💊','Technology':'💻',
+  'Education':'📚','Finance':'💰','Real Estate':'🏠','Beauty & Salon':'💇',
+  'Automotive':'🚗','Entertainment':'🎭','Travel & Tourism':'✈️','Home Services':'🔧',
+  'Legal':'⚖️','Sports & Fitness':'🏋️','Fashion':'👗','Other':'📦'
+};
+
+async function init() {
+  // fill category dropdowns
+  const catSelect = document.getElementById('search-cat');
+  const catGrid = document.getElementById('categories-grid');
+  CATEGORIES.forEach(c => {
+    catSelect.innerHTML += `<option value="${c}">${c}</option>`;
+    catGrid.innerHTML += `<div class="cat-card" onclick="browseCategory('${c}')">
+      <div class="cat-icon">${CAT_ICONS[c]||'📦'}</div>
+      <div class="cat-name">${c}</div>
+    </div>`;
+  });
+
+  // load listings
+  try {
+    const data = await apiFetch('/listings?limit=6');
+    document.getElementById('stat-count').textContent = data.length >= 6 ? '100+' : data.length;
+    const grid = document.getElementById('listings-grid');
+    if (!data.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🏪</div><h3>No listings yet</h3><p>Be the first to list your business!</p></div>`;
+    } else {
+      grid.innerHTML = data.map(renderCard).join('');
+    }
+  } catch(e) {
+    document.getElementById('listings-grid').innerHTML = `<div style="grid-column:1/-1;color:var(--text3);text-align:center;padding:40px;">Could not connect to API. Make sure the backend is running.</div>`;
+  }
+}
+
+function doSearch() {
+  const q = document.getElementById('search-input').value.trim();
+  const cat = document.getElementById('search-cat').value;
+  const params = new URLSearchParams();
+  if (q) params.set('q', q);
+  if (cat) params.set('category', cat);
+  window.location.href = `/pages/listings.html?${params}`;
+}
+
+document.getElementById('search-input').addEventListener('keydown', e => { if(e.key==='Enter') doSearch(); });
+
+function browseCategory(cat) {
+  window.location.href = `/pages/listings.html?category=${encodeURIComponent(cat)}`;
+}
+
+init();
+</script>
+</body>
+</html>
