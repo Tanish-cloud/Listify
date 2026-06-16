@@ -244,7 +244,7 @@ async function init() {
 
   // load listings
   try {
-    const data = await apiFetch('/listings?limit=6');
+    const data = await apiFetch('/listings?limit=1000');
     document.getElementById('stat-count').textContent = data.length;
     const grid = document.getElementById('listings-grid');
     if (!data.length) {
