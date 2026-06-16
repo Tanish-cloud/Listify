@@ -245,7 +245,7 @@ async function init() {
   // load listings
   try {
     const data = await apiFetch('/listings?limit=6');
-    document.getElementById('stat-count').textContent = data.length >= 6 ? '100+' : data.length;
+    document.getElementById('stat-count').textContent = data.length;
     const grid = document.getElementById('listings-grid');
     if (!data.length) {
       grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🏪</div><h3>No listings yet</h3><p>Be the first to list your business!</p></div>`;
