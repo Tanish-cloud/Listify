@@ -11,5 +11,5 @@ pydantic[email]
 aiofiles
 sentence-transformers==3.0.1
 faiss-cpu==1.8.0
-numpy
+numpy<2
 pydantic-settings
