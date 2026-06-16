@@ -13,3 +13,5 @@ sentence-transformers==3.0.1
 faiss-cpu==1.8.0
 numpy<2
 pydantic-settings
+
+psycopg2-binary
