@@ -34,6 +34,152 @@
 .listings-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
 
 .load-more { text-align:center; padding:32px 0; }
+
+.ai-search-section {
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+  border-radius: var(--radius);
+  padding: 40px 36px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.ai-search-section::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+.ai-search-header { text-align: center; margin-bottom: 24px; }
+.ai-badge {
+  display: inline-block;
+  background: rgba(99,102,241,0.2);
+  border: 1px solid rgba(99,102,241,0.5);
+  color: #a5b4fc;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px; margin-bottom: 12px;
+}
+.ai-search-header h2 { color: #f1f5f9; font-size: 1.4rem; font-weight: 800; margin: 0 0 6px; }
+.ai-search-header p  { color: #94a3b8; font-size: 0.9rem; margin: 0; }
+
+.ai-search-bar {
+  display: flex; gap: 10px;
+  max-width: 620px; margin: 0 auto 14px;
+}
+.ai-search-bar input {
+  flex: 1; padding: 13px 18px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px; color: #f1f5f9;
+  font-size: 0.9rem; font-family: 'Outfit', sans-serif;
+  outline: none; transition: border-color 0.2s, background 0.2s;
+}
+.ai-search-bar input::placeholder { color: #64748b; }
+.ai-search-bar input:focus {
+  border-color: #6366f1;
+  background: rgba(99,102,241,0.08);
+}
+.ai-search-bar button {
+  display: flex; align-items: center; gap: 8px;
+  padding: 13px 22px;
+  background: #6366f1; color: #fff;
+  font-size: 0.9rem; font-weight: 600;
+  border: none; border-radius: 10px;
+  cursor: pointer; white-space: nowrap;
+  font-family: 'Outfit', sans-serif;
+  transition: background 0.2s, transform 0.1s;
+}
+.ai-search-bar button:hover   { background: #4f46e5; }
+.ai-search-bar button:active  { transform: scale(0.97); }
+.ai-search-bar button:disabled { background: #475569; cursor: not-allowed; }
+
+.ai-search-examples {
+  text-align: center; color: #64748b; font-size: 0.8rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 8px; margin-bottom: 24px;
+}
+.example-chip {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #94a3b8; font-size: 0.78rem;
+  padding: 4px 12px; border-radius: 20px;
+  cursor: pointer; font-family: 'Outfit', sans-serif;
+  transition: background 0.15s, color 0.15s;
+}
+.example-chip:hover {
+  background: rgba(99,102,241,0.15);
+  color: #a5b4fc;
+  border-color: rgba(99,102,241,0.4);
+}
+.ai-status {
+  text-align: center; color: #94a3b8;
+  font-size: 0.85rem; padding: 12px 0;
+}
+.ai-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px; margin-top: 4px;
+}
+.ai-result-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 18px;
+  transition: border-color 0.2s, background 0.2s;
+  animation: fadeUp 0.3s ease both;
+}
+.ai-result-card:hover {
+  border-color: rgba(99,102,241,0.4);
+  background: rgba(99,102,241,0.06);
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.ai-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+.ai-card-name { font-size:1rem; font-weight:700; color:#f1f5f9; margin:0; }
+.ai-relevance-badge {
+  font-size:10px; font-weight:700; color:#a5b4fc;
+  background:rgba(99,102,241,0.15);
+  border:1px solid rgba(99,102,241,0.3);
+  border-radius:6px; padding:2px 7px; white-space:nowrap;
+}
+.ai-card-category {
+  font-size:0.72rem; color:#6366f1; font-weight:700;
+  text-transform:uppercase; letter-spacing:.5px; margin-bottom:7px;
+}
+.ai-card-desc {
+  font-size:0.82rem; color:#94a3b8; line-height:1.5;
+  display:-webkit-box; -webkit-line-clamp:2;
+  -webkit-box-orient:vertical; overflow:hidden; margin-bottom:10px;
+}
+.ai-card-meta { font-size:0.78rem; color:#64748b; display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+.ai-card-footer {
+  display:flex; gap:8px;
+  padding-top:12px; border-top:1px solid rgba(255,255,255,0.06);
+}
+.ai-card-btn {
+  flex:1; padding:7px; border-radius:8px;
+  font-size:0.8rem; font-weight:600;
+  text-align:center; text-decoration:none;
+  cursor:pointer; border:none;
+  font-family:'Outfit',sans-serif;
+  transition: background 0.15s;
+}
+.ai-card-btn.primary { background:#6366f1; color:#fff; }
+.ai-card-btn.primary:hover { background:#4f46e5; }
+.ai-card-btn.secondary {
+  background:rgba(255,255,255,0.06); color:#94a3b8;
+  border:1px solid rgba(255,255,255,0.1);
+}
+.ai-card-btn.secondary:hover { background:rgba(255,255,255,0.1); }
+@media(max-width:600px){
+  .ai-search-section { padding:28px 16px; }
+  .ai-search-bar { flex-direction:column; }
+  .ai-search-bar button { justify-content:center; }
+}
 </style>
 </head>
 <body>
@@ -55,6 +201,40 @@
   </div>
 
   <div class="container">
+
+    <section class="ai-search-section" id="ai-search">
+      <div class="ai-search-header">
+        <span class="ai-badge">✦ AI Search</span>
+        <h2>Find exactly what you need</h2>
+        <p>Describe what you're looking for in plain English — our AI will match you with the right businesses.</p>
+      </div>
+
+      <div class="ai-search-bar">
+        <input
+          type="text"
+          id="aiQueryInput"
+          placeholder='e.g. "a salon that does hair coloring on weekends"'
+          autocomplete="off"
+        />
+        <button id="aiSearchBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+          </svg>
+          Search
+        </button>
+      </div>
+
+      <div class="ai-search-examples">
+        Try:
+        <button class="example-chip">emergency plumber on weekends</button>
+        <button class="example-chip">cafe with wifi to work from</button>
+        <button class="example-chip">affordable gym with personal training</button>
+      </div>
+
+      <div id="aiSearchStatus" class="ai-status" style="display:none;"></div>
+      <div id="aiResults" class="ai-results-grid"></div>
+    </section>
+
     <div class="listings-layout">
       <!-- SIDEBAR FILTERS -->
       <aside class="sidebar">
@@ -192,6 +372,89 @@ window.loadListings = loadListings;
 window.clearFilters = clearFilters;
 window.buildCategoryFilters = buildCategoryFilters;
 window.renderListings = renderListings;
+
+// ── AI Search ──────────────────────────────────────────────────────────────
+const AI_API = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+document.getElementById('aiSearchBtn').addEventListener('click', runAISearch);
+
+document.getElementById('aiQueryInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') runAISearch();
+});
+
+document.querySelectorAll('.example-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.getElementById('aiQueryInput').value = chip.textContent.trim();
+    runAISearch();
+  });
+});
+
+async function runAISearch() {
+  const query = document.getElementById('aiQueryInput').value.trim();
+  if (!query) return;
+
+  const btn = document.getElementById('aiSearchBtn');
+  const statusEl = document.getElementById('aiSearchStatus');
+  const resultsEl = document.getElementById('aiResults');
+
+  btn.disabled = true;
+  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg> Searching…`;
+  statusEl.style.display = 'block';
+  statusEl.textContent = 'Finding the best matches…';
+  resultsEl.innerHTML = '';
+
+  try {
+    const res = await fetch(`${AI_API}/listings/search/ai`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query, top_k: 6 }),
+    });
+
+    if (!res.ok) throw new Error(`Server error: ${res.status}`);
+    const data = await res.json();
+
+    if (!data.results || data.results.length === 0) {
+      statusEl.textContent = 'No matching businesses found. Try a different description.';
+    } else {
+      statusEl.style.display = 'none';
+      resultsEl.innerHTML = data.results.map((b, i) => renderAICard(b, i)).join('');
+    }
+  } catch (err) {
+    statusEl.textContent = 'Something went wrong. Please try again.';
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg> Search`;
+  }
+}
+
+function renderAICard(b, index) {
+  const score = Math.round(b.relevance_score * 100);
+  const services = Array.isArray(b.services) ? b.services.slice(0, 3).join(' · ') : '';
+  const delay = index * 0.06;
+  const esc = str => str ? String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : '';
+
+  return `
+    <div class="ai-result-card" style="animation-delay:${delay}s">
+      <div class="ai-card-top">
+        <h3 class="ai-card-name">${esc(b.name)}</h3>
+        <span class="ai-relevance-badge">${score}% match</span>
+      </div>
+      <div class="ai-card-category">${esc(b.category)}</div>
+      <p class="ai-card-desc">${esc(b.description)}</p>
+      ${services ? `<p class="ai-card-desc" style="margin-bottom:8px">🛠 ${esc(services)}</p>` : ''}
+      <div class="ai-card-meta">
+        <span>📍 ${esc(b.city)}, ${esc(b.state)}</span>
+        <span>📞 ${esc(b.phone)}</span>
+      </div>
+      <div class="ai-card-footer">
+        <a href="/pages/business.html?id=${b.id}" class="ai-card-btn primary">View listing</a>
+        ${b.website ? `<a href="${esc(b.website)}" target="_blank" rel="noopener" class="ai-card-btn secondary">Website ↗</a>` : ''}
+      </div>
+    </div>`;
+}
+
+window.runAISearch = runAISearch;
 </script>
 </body>
 </html>
